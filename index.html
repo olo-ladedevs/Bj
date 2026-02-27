@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JetBlue — The Airport Dog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0a1628;
+      --sky: #2563eb;
+      --accent: #f59e0b;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.55);
+      --border: rgba(255,255,255,0.1);
+      --radius: 18px;
+      --surface: rgba(255,255,255,0.04);
+      --bg: #0b1221;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #0b1221;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 5%;
+      background: rgba(11,18,33,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      color: #ffffff;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #ffffff; }
+
+    .nav-cta {
+      background: var(--sky) !important;
+      color: #ffffff !important;
+      padding: 9px 22px;
+      border-radius: 50px;
+      font-weight: 600 !important;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 2px;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 65px; left: 0; right: 0;
+      background: rgba(10,22,40,0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 5%;
+      z-index: 99;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 120px 5% 80px;
+      gap: 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 10%; left: -10%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 2; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 28px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hero-badge .dot {
+      width: 7px; height: 7px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      line-height: 0.92;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 .line2 { color: var(--accent); }
+
+    .hero p {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 440px;
+      margin-bottom: 36px;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--sky);
+      color: #ffffff;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover { background: var(--accent); color: var(--navy); }
+
+    .btn-ghost {
+      background: transparent;
+      color: #ffffff;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      transition: border-color 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: #ffffff; }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+    }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: #ffffff;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-visual {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .hero-img {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .hero-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .hero-img:hover img { transform: scale(1.04); }
+    .hero-img.tall { grid-row: span 2; height: 420px; }
+    .hero-img:not(.tall) { height: 200px; }
+
+    .img-tag {
+      position: absolute;
+      bottom: 10px; left: 10px;
+      background: rgba(10,22,40,0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 480px;
+    }
+
+    .story-strip {
+      padding: 80px 5%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .story-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .story-img {
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: 340px;
+      border: 1px solid var(--border);
+    }
+
+    .story-img img,
+    .story-img video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .story-text .section-label { margin-bottom: 12px; }
+
+    .story-text h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .story-text h2 span { color: var(--accent); }
+
+    .story-text p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      margin-bottom: 12px;
+    }
+
+    .story-ca {
+      margin-top: 24px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      user-select: none;
+    }
+
+    .story-ca:hover {
+      background: rgba(245,158,11,0.1);
+      border-color: var(--accent);
+    }
+
+    .story-ca-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .story-ca-value {
+      font-size: clamp(0.65rem, 1.8vw, 0.85rem);
+      color: #ffffff;
+      font-weight: 500;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    .story-ca-copy {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .manifesto {
+      padding: 80px 5%;
+      background: #0b1221;
+      position: relative;
+      z-index: 1;
+    }
+
+    .manifesto-inner { max-width: 1100px; margin: 0 auto; }
+    .manifesto-header { margin-bottom: 48px; }
+
+    .manifesto-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .manifesto-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .manifesto-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+    }
+
+    .manifesto-roman {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .manifesto-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      line-height: 1.3;
+      color: #ffffff;
+    }
+
+    .manifesto-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .manifesto-footer {
+      margin-top: 40px;
+      text-align: center;
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .manifesto-footer p {
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .manifesto-footer p span { color: #ffffff; }
+
+    .socials {
+      padding: 100px 5%;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      background: #0b1221;
+    }
+
+    .socials .section-sub { margin: 0 auto 48px; }
+
+    .social-grid {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .social-card {
+      flex: 1;
+      min-width: 130px;
+      max-width: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-decoration: none;
+      color: #ffffff;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .social-card:hover {
+      background: rgba(37,99,235,0.15);
+      border-color: var(--sky);
+      transform: translateY(-4px);
+    }
+
+    .social-card svg { width: 28px; height: 28px; fill: currentColor; }
+
+    .social-card span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 5%;
+      text-align: center;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.8rem;
+      background: #0b1221;
+    }
+
+    footer span { color: var(--accent); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .hero p { margin: 0 auto 36px; }
+      .hero-btns { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .hero-visual { max-width: 480px; margin: 0 auto; }
+      .story-inner { grid-template-columns: 1fr; }
+      .story-img { height: 260px; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero { padding-top: 100px; }
+    }
+
+    @media (max-width: 500px) {
+      .hero-btns { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-ghost { width: 100%; max-width: 280px; text-align: center; justify-content: center; }
+      .hero-img.tall { height: 300px; }
+      .hero-img:not(.tall) { height: 140px; }
+      .story-inner { padding: 28px 20px; }
+      .social-card { min-width: 110px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">JET<span>BLUE</span></div>
+    <ul class="nav-links">
+      <li><a href="#story">His Story</a></li>
+      <li><a href="#manifesto">Manifesto</a></li>
+      <li><a href="#socials">Community</a></li>
+      <li><a href="#socials" class="nav-cta">Join the Pack</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#story" onclick="closeMenu()">His Story</a>
+    <a href="#manifesto" onclick="closeMenu()">Manifesto</a>
+    <a href="#socials" onclick="closeMenu()">Community</a>
+    <a href="#socials" onclick="closeMenu()">Join the Pack</a>
+  </div>
+
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="dot"></span> Now Flying on Solana</div>
+      <h1>FROM THE<br><span class="line2">TERMINAL</span><br>TO THE MOON.</h1>
+      <p>JetBlue was left behind at the airport. Now he's taking everyone to the moon. The most loyal dog on the blockchain — abandoned no more.</p>
+      <div class="hero-btns">
+        <a href="#manifesto" class="btn-primary">✈️ Read the Manifesto</a>
+        <a href="#story" class="btn-ghost">His Story</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">1B</div>
+          <div class="stat-label">Total Supply</div>
+        </div>
+        <div>
+          <div class="stat-num">0%</div>
+          <div class="stat-label">Tax</div>
+        </div>
+        <div>
+          <div class="stat-num">🔒</div>
+          <div class="stat-label">LP Locked</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-img tall">
+        <img src="img1.jpg" alt="JetBlue astronaut"/>
+        <div class="img-tag">🚀 Astronaut Mode</div>
+      </div>
+      <div class="hero-img">
+        <img src="img2.jpg" alt="JetBlue plane"/>
+        <div class="img-tag">✈️ JetBlue Mode</div>
+      </div>
+      <div class="hero-img">
+        <img src="img3.jpg" alt="JetBlue airport"/>
+        <div class="img-tag">🏁 The Origin</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story-strip" id="story">
+    <div class="story-inner reveal">
+      <div class="story-img">
+        <video autoplay muted loop playsinline src="jetblue_story.mp4"></video>
+      </div>
+      <div class="story-text">
+        <div class="section-label">Origin Story</div>
+        <h2>LEFT BEHIND.<br><span>NEVER</span> FORGOTTEN.</h2>
+        <p>JetBlue was a good boy. The best, actually. But one day, his owner walked through those airport doors — and never came back.</p>
+        <p>He sat by that terminal window, watching planes take off, waiting. The internet found him. The internet loved him.</p>
+        <p>This is his redemption arc. And you're part of it. 🐾</p>
+        <div class="story-ca" onclick="copyStoryCA()">
+          <div class="story-ca-label">Contract Address — tap to copy</div>
+          <div class="story-ca-value" id="storyCA">4S3iknKvK7CnPkkcWQys5KBqwrTosYNax8A2u2xWpump</div>
+          <div class="story-ca-copy" id="storyCACopied">📋 Copy</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="manifesto" id="manifesto">
+    <div class="manifesto-inner">
+      <div class="manifesto-header reveal">
+        <div class="section-label">The JetBlue Manifesto</div>
+        <h2 class="section-title">A letter to<br>the pack.</h2>
+      </div>
+      <div class="manifesto-grid">
+        <div class="manifesto-card reveal">
+          <div class="manifesto-roman">I.</div>
+          <h3 class="manifesto-title">The Ticket to Nowhere</h3>
+          <p class="manifesto-text">On February 2nd, a Goldendoodle was left tied to a baggage sizer, a piece of cold metal meant to measure weight, not worth. He was abandoned for a flight he wasn't allowed to board.</p>
+        </div>
+        <div class="manifesto-card reveal">
+          <div class="manifesto-roman">II.</div>
+          <h3 class="manifesto-title">The Tracking Device of the Heart</h3>
+          <p class="manifesto-text">They said he had a tracking device to find his own way. They were right, but it wasn't GPS — it was his spirit. He didn't find his way back to the past; he found his way into the arms of the very hero who rescued him, Officer Skeeter Black.</p>
+        </div>
+        <div class="manifesto-card reveal">
+          <div class="manifesto-roman">III.</div>
+          <h3 class="manifesto-title">Our Flight Plan</h3>
+          <p class="manifesto-text">We are the community that ensures no one is left behind at the gate. We take the JetBlue name back, no longer a symbol of abandonment, but a symbol of the global pack that stepped up when 2,400 families offered him a home.</p>
+        </div>
+        <div class="manifesto-card reveal">
+          <div class="manifesto-roman">IV.</div>
+          <h3 class="manifesto-title">The Destination</h3>
+          <p class="manifesto-text">We don't just moon. We rescue. We fund. We protect. Every transaction is a step toward a world where every JetBlue has a Skeeter Black waiting for them.</p>
+        </div>
+      </div>
+      <div class="manifesto-footer reveal">
+        <p>The gate is open. <span>Welcome to the pack.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="socials" id="socials">
+    <div class="section-label">Community</div>
+    <h2 class="section-title">JOIN THE PACK 🐾</h2>
+    <p class="section-sub">Thousands of JetBlue believers already on board. Come fly with us.</p>
+    <div class="social-grid">
+      <a href="#" class="social-card">
+        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <span>Twitter / X</span>
+      </a>
+      <a href="#" class="social-card">
+        <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.504-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        <span>Telegram</span>
+      </a>
+      <a href="#" class="social-card">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.003.025.015.05.031.066a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        <span>Discord</span>
+      </a>
+      <a href="#" class="social-card">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        <span>Instagram</span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 <span>$JETBLUE</span>. All rights reserved. — $JETBLUE is a meme coin with no intrinsic value. Always DYOR.</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    function closeMenu() {
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+    function copyStoryCA() {
+      const ca = document.getElementById('storyCA').innerText;
+      navigator.clipboard.writeText(ca).then(() => {
+        const btn = document.getElementById('storyCACopied');
+        const box = btn.closest('.story-ca');
+        btn.innerText = '✓ Copied!';
+        btn.style.color = '#4ade80';
+        box.style.borderColor = '#4ade80';
+        setTimeout(() => {
+          btn.innerText = '📋 Copy';
+          btn.style.color = '';
+          box.style.borderColor = '';
+        }, 2000);
+      });
+    }
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
